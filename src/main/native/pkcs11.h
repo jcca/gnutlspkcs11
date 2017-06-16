@@ -50,10 +50,18 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_delete
 /*
  * Class:     org_gnutlspkcs11_PKCS11
  * Method:    generate
- * Signature: (Ljava/lang/String;IILjava/lang/String;Ljava/lang/String;Ljava/io/OutputStream;)V
+ * Signature: (Ljava/lang/String;IILjava/lang/String;Ljava/lang/String;)[B
  */
-JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_generate
-  (JNIEnv *, jobject, jstring, jint, jint, jstring, jstring, jobject);
+JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_generate
+  (JNIEnv *, jobject, jstring, jint, jint, jstring, jstring);
+
+/*
+ * Class:     org_gnutlspkcs11_PKCS11
+ * Method:    loadCertificate
+ * Signature: (Ljava/lang/String;)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
+  (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus
 }

@@ -165,14 +165,8 @@ JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenObjects
   return result;
 }
 
-JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_generate
-(JNIEnv *env, jobject thisObj, jstring jurl, jint pk, jint bits, jstring jlabel, jstring jid, jobject out) {
-
-  jclass wcls;
-  jmethodID wcls_write;
-  wcls = (*env)->FindClass(env, "java/io/OutputStream");
-  wcls_write  = (*env)->GetMethodID(env, wcls, "write", "([B)V");
-
+JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_generate
+(JNIEnv *env, jobject thisObj, jstring jurl, jint pk, jint bits, jstring jlabel, jstring jid) {
   int ret;
   unsigned int flags = 0;
   gnutls_datum_t cid = {NULL, 0};
@@ -194,7 +188,7 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_generate
     ret = gnutls_hex2bin(id, strlen(id), raw_id, &raw_id_size);
     if (ret < 0) {
       printf("Error converting hex: %s\n", gnutls_strerror(ret));
-      return ;                  /* new exception */
+      return NULL;                  /* new exception */
     }
     cid.data = raw_id;
     cid.size = raw_id_size;
@@ -210,17 +204,14 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_generate
     {
       printf("Error generating keys: %s\n", gnutls_strerror(ret));
       /* new exception */
-      return;
+      return NULL;
     }
 
   jbyteArray bArray = (*env)->NewByteArray(env, pubkey.size);
   (*env)->SetByteArrayRegion(env, bArray, 0, pubkey.size, (jbyte*)pubkey.data);
 
-  (*env)->CallBooleanMethod(env, out, wcls_write, bArray);
-
-  (*env)->DeleteLocalRef(env, bArray);
-
   /* gnutls_free(pubkey.data); ??????*/
+  return bArray;
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
@@ -237,8 +228,10 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
   data.data = buf;
   data.size = len;
 
-  if ((ret = gnutlspkcs11_sign(url, &data, &signature, GNUTLS_DIG_SHA256, flags)) < 0)
+  if ((ret = gnutlspkcs11_sign(url, &data, &signature, GNUTLS_DIG_SHA256, flags)) < 0) {
     GnutlsPkcs11Exception(env, gnutls_strerror(ret));
+    return NULL;
+  }
 
   jbyteArray result = (*env)->NewByteArray(env, signature.size);
   (*env)->SetByteArrayRegion(env, result, 0, signature.size, signature.data);

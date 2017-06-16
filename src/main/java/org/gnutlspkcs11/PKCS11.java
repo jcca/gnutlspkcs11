@@ -18,7 +18,6 @@
 
 package org.gnutlspkcs11;
 
-import java.io.OutputStream;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.List;
@@ -35,7 +34,7 @@ public class PKCS11 {
     private native byte[] signData(String privkey, int dig, byte data[]);
     private native boolean verifyData(String pubkey, int dig, byte data[], byte signature[]);
     public native void delete(String url, int flags);
-    public native void generate(String url, int pk, int bits, String label, String id, OutputStream pubkey);
+    public native byte[] generate(String url, int pk, int bits, String label, String id);
     public native byte[] loadCertificate(String url);
 
     public byte[] sign(PrivateKey privkey, byte data[]) {
