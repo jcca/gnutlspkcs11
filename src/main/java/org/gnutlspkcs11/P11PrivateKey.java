@@ -31,10 +31,6 @@ class P11PrivateKey extends P11Key implements PrivateKey{
         super(cPtr);
     }
 
-    public String getAlgorithm() {
-        return "RSA";
-    }
-
     public String getFormat() {
         return null;
     }

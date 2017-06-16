@@ -28,10 +28,6 @@ public class P11PublicKey extends P11Key implements PublicKey{
         super(cPtr);
     }
 
-    public String getAlgorithm() {
-        return null;
-    }
-
     public String getFormat() {
         return null;
     }

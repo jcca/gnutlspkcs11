@@ -33,4 +33,7 @@ abstract  class P11Key implements Key {
         return (obj == null) ? "" : obj.CPtr;
     }
 
+    public String getAlgorithm() {
+        return "RSA";
+    }
 }
