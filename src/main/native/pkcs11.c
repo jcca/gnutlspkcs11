@@ -72,7 +72,7 @@ gnutlspkcs11_verify(const char *url, gnutls_datum_t *data, gnutls_datum_t *sig, 
 }
 
 JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenUrls
-(JNIEnv *env, jobject thisObj, jint flags) {
+(JNIEnv *env, jobject thisObj, jint jdetailed) {
   jclass list;
   jmethodID list_;
   jmethodID list_get;
@@ -87,7 +87,7 @@ JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenUrls
   int ret, tokens_size;
   char **urls = NULL;;
   char *url;
-  unsigned detailed = 0;
+  unsigned detailed = jdetailed;
   for (tokens_size = 0;; tokens_size++) {
     ret = gnutls_pkcs11_token_get_url(tokens_size, detailed, &url);
     if (ret == GNUTLS_E_REQUESTED_DATA_NOT_AVAILABLE)
@@ -146,6 +146,7 @@ JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenObjects
   if (ret < 0){
     fprintf(stderr, "error: %s\n", gnutls_strerror(ret));
     /* new exception */
+    return NULL;
   }
 
   jobject result = (*env)->NewObject(env, list, list_, crt_list_size);
@@ -215,7 +216,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_generate
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
-(JNIEnv *env, jobject thisObj, jstring jurl, jint jdig, jbyteArray jdata) {
+(JNIEnv *env, jobject thisObj, jstring jurl, jint dig, jbyteArray jdata) {
 
   int ret, len;
   gnutls_datum_t signature;
@@ -228,7 +229,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
   data.data = buf;
   data.size = len;
 
-  if ((ret = gnutlspkcs11_sign(url, &data, &signature, GNUTLS_DIG_SHA256, flags)) < 0) {
+  if ((ret = gnutlspkcs11_sign(url, &data, &signature, dig, flags)) < 0) {
     GnutlsPkcs11Exception(env, gnutls_strerror(ret));
     return NULL;
   }
@@ -241,7 +242,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
 }
 
 JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData
-(JNIEnv *env, jobject thisObj, jstring jurl, jint jdig, jbyteArray jdata, jbyteArray jsignature) {
+(JNIEnv *env, jobject thisObj, jstring jurl, jint dig, jbyteArray jdata, jbyteArray jsignature) {
 
   /* GNUTLS_DIG_SHA256 */
   int ret, len;
@@ -262,7 +263,7 @@ JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData
   signature.data = sig;
   signature.size = len;
 
-  if ((ret = gnutlspkcs11_verify(url, &data, &signature, GNUTLS_DIG_SHA256, flags)) < 0) {
+  if ((ret = gnutlspkcs11_verify(url, &data, &signature, dig, flags)) < 0) {
     // TODO: check ret code and throw exception if status is error
     GnutlsPkcs11Exception(env, gnutls_strerror(ret));
     return JNI_FALSE;

@@ -29,7 +29,7 @@ public class PKCS11 {
         System.loadLibrary("gpkcs11");
     }
 
-    public native List<String> listTokenUrls(int flags);
+    public native List<String> listTokenUrls(int detailed);
     public native List<String> listTokenObjects(String url, int flags);
     private native byte[] signData(String privkey, int dig, byte data[]);
     private native boolean verifyData(String pubkey, int dig, byte data[], byte signature[]);
@@ -39,12 +39,12 @@ public class PKCS11 {
 
     public byte[] sign(PrivateKey privkey, byte data[]) {
         // check privkey instance of p11privkey
-        return signData(P11Key.getCPtr((P11Key) privkey), 0, data); // use RSA with sha256 by default
+        return signData(P11Key.getCPtr((P11Key) privkey), GNUTLS_DIG.SHA256, data); // use RSA with sha256 by default
     }
 
     public boolean verify(PublicKey pubkey, byte data[], byte signature[]) {
         // check
-        return verifyData(P11Key.getCPtr((P11Key) pubkey), 0, data, signature);
+        return verifyData(P11Key.getCPtr((P11Key) pubkey), GNUTLS_DIG.SHA256, data, signature);
     }
 
     // TODO: fixme
