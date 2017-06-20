@@ -33,6 +33,7 @@ public class PKCS11 {
     public native List<String> listTokenObjects(String url, int flags);
     private native byte[] signData(String privkey, int dig, byte data[]);
     private native boolean verifyData(String pubkey, int dig, byte data[], byte signature[]);
+    private native boolean verifyData(byte pubkey[], int dig, byte data[], byte signature[]);
     public native void delete(String url, int flags);
     public native byte[] generate(String url, int pk, int bits, String label, String id);
     public native byte[] loadCertificate(String url);

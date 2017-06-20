@@ -241,7 +241,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
   return result;
 }
 
-JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData
+JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData__Ljava_lang_String_2I_3B_3B
 (JNIEnv *env, jobject thisObj, jstring jurl, jint dig, jbyteArray jdata, jbyteArray jsignature) {
 
   /* GNUTLS_DIG_SHA256 */
@@ -269,5 +269,10 @@ JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData
     return JNI_FALSE;
   }
 
+  return JNI_TRUE;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData___3BI_3B_3B
+(JNIEnv *env, jobject thisObj, jbyteArray jpubkey, jint dig, jbyteArray jdata, jbyteArray jsignature) {
   return JNI_TRUE;
 }

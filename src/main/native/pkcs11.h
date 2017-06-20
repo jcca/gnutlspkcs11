@@ -36,8 +36,16 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
  * Method:    verifyData
  * Signature: (Ljava/lang/String;I[B[B)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData
+JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData__Ljava_lang_String_2I_3B_3B
   (JNIEnv *, jobject, jstring, jint, jbyteArray, jbyteArray);
+
+/*
+ * Class:     org_gnutlspkcs11_PKCS11
+ * Method:    verifyData
+ * Signature: ([BI[B[B)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData___3BI_3B_3B
+  (JNIEnv *, jobject, jbyteArray, jint, jbyteArray, jbyteArray);
 
 /*
  * Class:     org_gnutlspkcs11_PKCS11
