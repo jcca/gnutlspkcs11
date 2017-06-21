@@ -20,6 +20,7 @@ package org.gnutlspkcs11;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.security.PrivateKey;
@@ -32,9 +33,11 @@ import java.util.List;
  * Created by jcca on 6/19/17.
  */
 class PKCS11Test {
+
     static String TOKEN     = "pkcs11:model=PKCS%2315%20emulated;manufacturer=OpenPGP%20project;serial=fffe67130835;"
                               + "token=OpenPGP%20card%20%28User%20PIN%20%28sig%29%29";
     static String ID_OBJECT = "id=%01;object=Signature%20key";
+
     static String PIN       = "pin-value=123456";
     static String URL       = TOKEN + ";" + ID_OBJECT + ";" + PIN;
     static byte[] data      = "foobar".getBytes();
@@ -71,6 +74,7 @@ class PKCS11Test {
         boolean key = false;
         for(String url: urls) {
             if (url.equals(URL)) {
+                System.out.println(URL);
                 key = true;
                 break;
             }
@@ -78,14 +82,27 @@ class PKCS11Test {
         Assertions.assertTrue(key);
     }
 
+    @Disabled("Run only if you have a real pkcs11 token.")
     @Test
-    void signVerify() throws Exception{
+    void generateDelete() throws Exception {
+        String id = "0102";
+        int flags = 0;
+
+        byte pubkey[] = p11.generate(TOKEN, 0, 2048, "test", id);
+        String URL = TOKEN + ";id=%01%02;object=test;type=public";
+        p11.delete(URL, flags);
+        String URL = TOKEN + ";id=%01%02;object=test;type=private" + ";" + PIN;
+        flags |= GNUTLS_PKCS11_OBJ_FLAG.LOGIN;
+        p11.delete(TOKEN, flags);
+    }
+
+    @Test
+    void signVerify() throws Exception {
         PrivateKey privkey = p11.loadPrivateKey(URL);
         Signature privateSignature = Signature.getInstance("SHA256withRSA", "GNUTLSPKCS11");
         privateSignature.initSign(privkey);
         privateSignature.update(data);
         byte signature[] = privateSignature.sign();
-
         PublicKey pubkey = p11.loadPublickey(URL);
         Signature publicSignature = Signature.getInstance("SHA256withRSA", "GNUTLSPKCS11");
         publicSignature.initVerify(pubkey);
