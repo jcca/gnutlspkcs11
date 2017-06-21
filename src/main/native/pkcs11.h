@@ -65,6 +65,14 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_generate
 
 /*
  * Class:     org_gnutlspkcs11_PKCS11
+ * Method:    write
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[BI)V
+ */
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_write
+  (JNIEnv *, jobject, jstring, jstring, jstring, jbyteArray, jint);
+
+/*
+ * Class:     org_gnutlspkcs11_PKCS11
  * Method:    loadCertificate
  * Signature: (Ljava/lang/String;)[B
  */

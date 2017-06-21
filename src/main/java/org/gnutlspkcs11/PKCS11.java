@@ -36,6 +36,7 @@ public class PKCS11 {
     private native boolean verifyData(byte pubkey[], int dig, byte data[], byte signature[]);
     public native void delete(String url, int flags);
     public native byte[] generate(String url, int pk, int bits, String label, String id);
+    public native void write(String url, String label, String id, byte data[], int flags);
     public native byte[] loadCertificate(String url);
 
     public byte[] sign(PrivateKey privkey, byte data[]) {

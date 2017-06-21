@@ -94,7 +94,8 @@ class PKCS11Test {
     @Disabled("Run only if you have a real pkcs11 token.")
     @Test
     void write() throws Exception {
-
+        int flags = 0;
+        p11.write(TOKEN, "gnutlsp11", "01:02:03", new byte[0], flags);
     }
 
     @Test

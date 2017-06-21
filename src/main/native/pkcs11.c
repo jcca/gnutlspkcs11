@@ -227,6 +227,11 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_generate
   return bArray;
 }
 
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_write
+(JNIEnv *env, jobject thisObj, jstring jurl, jstring jlabel, jstring jid, jbyteArray jdata, jint flags) {
+
+}
+
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
 (JNIEnv *env, jobject thisObj, jstring jurl, jint dig, jbyteArray jdata) {
 
