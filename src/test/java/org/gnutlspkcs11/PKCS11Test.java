@@ -74,7 +74,6 @@ class PKCS11Test {
         boolean key = false;
         for(String url: urls) {
             if (url.equals(URL)) {
-                System.out.println(URL);
                 key = true;
                 break;
             }
@@ -88,7 +87,7 @@ class PKCS11Test {
         String id = "0102";
         int flags = 0;
 
-        byte pubkey[] = p11.generate(TOKEN, 0, 2048, "test", id);
+        byte pubkey[] = p11.generate(TOKEN, GNUTLS_PK.RSA, 2048, "test", id);
         String URL = TOKEN + ";id=%01%02;object=test;type=public";
         p11.delete(URL, flags);
         String URL = TOKEN + ";id=%01%02;object=test;type=private" + ";" + PIN;

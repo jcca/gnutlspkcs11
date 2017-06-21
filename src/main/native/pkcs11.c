@@ -200,7 +200,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_generate
   flags |= GNUTLS_PKCS11_OBJ_FLAG_MARK_PRIVATE;
 
   if ((ret = gnutls_pkcs11_privkey_generate3(url, pk, bits, label, &cid,
-                                             GNUTLS_X509_FMT_PEM, &pubkey,
+                                             GNUTLS_X509_FMT_DER, &pubkey,
                                              GNUTLS_KEY_DIGITAL_SIGNATURE, flags)) != 0)
     {
       printf("Error generating keys: %s\n", gnutls_strerror(ret));
