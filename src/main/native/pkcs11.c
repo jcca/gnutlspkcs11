@@ -166,6 +166,18 @@ JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenObjects
   return result;
 }
 
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_delete
+(JNIEnv *env, jobject thisObj, jstring jurl, jint flags) {
+  int ret;
+  const char *url = NULL;
+  if (jurl != NULL)
+      url = (*env)->GetStringUTFChars(env, jurl, 0);
+
+  if ((ret = gnutls_pkcs11_delete_url(url, flags)) < 0) {
+     // new exeption
+  }
+}
+
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_generate
 (JNIEnv *env, jobject thisObj, jstring jurl, jint pk, jint bits, jstring jlabel, jstring jid) {
   int ret;
