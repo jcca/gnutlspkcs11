@@ -18,15 +18,11 @@
 
 package org.gnutlspkcs11;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
-import java.security.Signature;
 import java.util.List;
 
 /**
@@ -34,17 +30,17 @@ import java.util.List;
  */
 class PKCS11Test {
 
-    static String TOKEN     = "pkcs11:model=PKCS%2315%20emulated;manufacturer=OpenPGP%20project;serial=fffe67130835;"
+    public static String TOKEN     = "pkcs11:model=PKCS%2315%20emulated;manufacturer=OpenPGP%20project;serial=fffe67130835;"
                               + "token=OpenPGP%20card%20%28User%20PIN%20%28sig%29%29";
-    static String ID_OBJECT = "id=%01;object=Signature%20key";
+    public static String ID_OBJECT = "id=%01;object=Signature%20key";
 
-    static String PIN       = "pin-value=123456";
-    static String URL       = TOKEN + ";" + ID_OBJECT + ";" + PIN;
+    public static String PIN       = "pin-value=123456";
+    public static String URL       = TOKEN + ";" + ID_OBJECT + ";" + PIN;
     static byte[] data      = "foobar".getBytes();
     PKCS11 p11              = new PKCS11();
 
     @BeforeAll
-    public static void init() {
+    public static void before() {
         Security.addProvider(new GnutlsPKCS11());
     }
 
@@ -83,7 +79,7 @@ class PKCS11Test {
 
     @Disabled("Run only if you have a real pkcs11 token.")
     @Test
-    void generateDelete() throws Exception {
+    void generate() throws Exception {
         String id = "0102";
         int flags = 0;
 
@@ -95,17 +91,23 @@ class PKCS11Test {
         p11.delete(TOKEN, flags);
     }
 
+    @Disabled("Run only if you have a real pkcs11 token.")
     @Test
-    void signVerify() throws Exception {
+    void write() throws Exception {
+
+    }
+
+    @Test
+    void sign() throws Exception {
         PrivateKey privkey = p11.loadPrivateKey(URL);
-        Signature privateSignature = Signature.getInstance("SHA256withRSA", "GNUTLSPKCS11");
-        privateSignature.initSign(privkey);
-        privateSignature.update(data);
-        byte signature[] = privateSignature.sign();
         PublicKey pubkey = p11.loadPublickey(URL);
-        Signature publicSignature = Signature.getInstance("SHA256withRSA", "GNUTLSPKCS11");
-        publicSignature.initVerify(pubkey);
-        publicSignature.update(data);
-        Assertions.assertTrue(publicSignature.verify(signature));
+
+        byte signature[] = p11.sign(privkey, data);
+        Assertions.assertTrue(p11.verify(pubkey, data, signature));
+    }
+
+    @AfterAll
+    public static void after() {
+        Security.removeProvider("GNUTLSPKCS11");
     }
 }
