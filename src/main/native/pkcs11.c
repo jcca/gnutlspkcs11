@@ -134,7 +134,8 @@ JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenObjects
   list_add  = (*env)->GetMethodID(env, list, "add", "(Ljava/lang/Object;)Z");
   list_size = (*env)->GetMethodID (env, list, "size", "()I");
 
-  const char *curl = (*env)->GetStringUTFChars(env, jurl, 0);
+  const char *curl;
+  curl = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): NULL;
 
   int ret, i;
   gnutls_pkcs11_obj_t *crt_list;
@@ -170,8 +171,7 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_delete
 (JNIEnv *env, jobject thisObj, jstring jurl, jint flags) {
   int ret;
   const char *url = NULL;
-  if (jurl != NULL)
-      url = (*env)->GetStringUTFChars(env, jurl, 0);
+  url = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): NULL;
 
   if ((ret = gnutls_pkcs11_delete_url(url, flags)) < 0) {
      // new exeption
@@ -189,12 +189,9 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_generate
   const char *id = NULL;
   const char *url = NULL;
   const char *label = NULL;
-  if (jurl != NULL)
-    url = (*env)->GetStringUTFChars(env, jurl, 0);
-  if (jid != NULL)
-    id = (*env)->GetStringUTFChars(env, jid, 0);
-  if (jlabel != NULL)
-    label = (*env)->GetStringUTFChars(env, jlabel, 0);
+  url = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): NULL;
+  id = jid != NULL? (*env)->GetStringUTFChars(env, jid, 0): NULL;
+  label = jlabel != NULL? (*env)->GetStringUTFChars(env, jlabel, 0): NULL;
 
   if (id != NULL) {
     raw_id_size = sizeof(raw_id);
@@ -232,12 +229,10 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_write
   const char *id = NULL;
   const char *url = NULL;
   const char *label = NULL;
-  if (jurl != NULL)
-    url = (*env)->GetStringUTFChars(env, jurl, 0);
-  if (jid != NULL)
-    id = (*env)->GetStringUTFChars(env, jid, 0);
-  if (jlabel != NULL)
-    label = (*env)->GetStringUTFChars(env, jlabel, 0);
+
+  url = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): NULL;
+  id = jid != NULL? (*env)->GetStringUTFChars(env, jid, 0): NULL;
+  label = jlabel != NULL? (*env)->GetStringUTFChars(env, jlabel, 0): NULL;
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
