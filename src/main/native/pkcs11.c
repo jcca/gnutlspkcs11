@@ -229,7 +229,15 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_generate
 
 JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_write
 (JNIEnv *env, jobject thisObj, jstring jurl, jstring jlabel, jstring jid, jbyteArray jdata, jint flags) {
-
+  const char *id = NULL;
+  const char *url = NULL;
+  const char *label = NULL;
+  if (jurl != NULL)
+    url = (*env)->GetStringUTFChars(env, jurl, 0);
+  if (jid != NULL)
+    id = (*env)->GetStringUTFChars(env, jid, 0);
+  if (jlabel != NULL)
+    label = (*env)->GetStringUTFChars(env, jlabel, 0);
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
