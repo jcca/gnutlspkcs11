@@ -226,13 +226,64 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_generate
 
 JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_write
 (JNIEnv *env, jobject thisObj, jstring jurl, jstring jlabel, jstring jid, jbyteArray jdata, jint flags) {
-  const char *id = NULL;
-  const char *url = NULL;
-  const char *label = NULL;
+  const char *id;
+  const char *url;
+  const char *label;
 
   url = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): NULL;
   id = jid != NULL? (*env)->GetStringUTFChars(env, jid, 0): NULL;
   label = jlabel != NULL? (*env)->GetStringUTFChars(env, jlabel, 0): NULL;
+
+  gnutls_datum_t data;
+  gnutls_x509_crt_t crt;
+  unsigned char *buf = (unsigned char*)(*env)->GetByteArrayElements(env, jdata, 0);
+  int len = (*env)->GetArrayLength (env, jdata);
+
+  data.data = buf;
+  data.size = len;
+
+  int ret;
+  gnutls_datum_t cid = {NULL, 0};
+  unsigned char raw_id[128];
+  size_t raw_id_size;
+
+  if (id != NULL) {
+    raw_id_size = sizeof(raw_id);
+    ret = gnutls_hex2bin(id, strlen(id), raw_id, &raw_id_size);
+    if (ret < 0) {
+      printf("Error converting hex: %s\n", gnutls_strerror(ret));
+      return;
+    }
+    cid.data = raw_id;
+    cid.size = raw_id_size;
+  }
+
+  if((ret = gnutls_x509_crt_init(&crt)) < 0) {
+    /* fprintf(stderr, "x509_crt_init: %s\n", gnutls_strerror(ret)); */
+    /* exit(1); */
+    return;
+  }
+
+  gnutls_x509_crt_import(crt, &data, GNUTLS_X509_FMT_PEM);
+  // free data
+
+
+  // TODO: if cid.data == NULL search public key and get id
+
+  ret = gnutls_pkcs11_copy_x509_crt2(url, crt, label, &cid, flags);
+
+  if (ret < 0) {
+    fprintf(stderr, "Error writing certificate: %s\n", gnutls_strerror(ret));
+    if (((flags & GNUTLS_PKCS11_OBJ_FLAG_MARK_CA) ||
+         (flags & GNUTLS_PKCS11_OBJ_FLAG_MARK_TRUSTED)) &&
+        (flags & GNUTLS_PKCS11_OBJ_FLAG_LOGIN_SO) == 0)
+      fprintf(stderr, "note: some tokens may require security officer login for this operation\n");
+  }
+
+  /* gnutls_x509_crt_get_key_usage(crt, &key_usage, NULL); */
+  /* gnutls_x509_crt_deinit(crt); */
+  /* return ret; */
+
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
