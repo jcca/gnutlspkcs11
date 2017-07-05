@@ -44,7 +44,7 @@ class P11SignatureTest {
 
     static String URL       = PKCS11Test.URL;
     static byte[] data      = PKCS11Test.data;
-    PKCS11 p11              = new PKCS11();
+    PKCS11 p11              = PKCS11.getInstance();
 
     @BeforeAll
     public static void before() {
@@ -81,7 +81,7 @@ class P11SignatureTest {
     @Disabled("Run only if you have a real pkcs11 token.")
     @Test
     void signPDF() throws Exception {
-        InputStream certstream = new FileInputStream("<CERTIFICATE>");
+        InputStream certstream = new ByteArrayInputStream(p11.loadCertificate(URL));
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         Certificate crt = cf.generateCertificate(certstream);
         Certificate[] chain = new Certificate[] {crt};
@@ -90,7 +90,7 @@ class P11SignatureTest {
         Provider p = new GnutlsPKCS11();
         Security.addProvider(p);
 
-        PKCS11 p11 = new PKCS11();
+        PKCS11 p11 = PKCS11.getInstance();
 
         PrivateKey pk = p11.loadPrivateKey(URL);
 

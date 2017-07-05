@@ -25,10 +25,23 @@ import java.util.List;
  * Created by jcca on 6/12/17.
  */
 public class PKCS11 {
+    private static PKCS11 ourInstance;
     static {
         System.loadLibrary("gpkcs11");
     }
 
+    public static PKCS11 getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new PKCS11();
+            ourInstance.pkcs11Init();
+        }
+
+        return ourInstance;
+    }
+
+    private PKCS11() {}
+
+    private native void pkcs11Init();
     public native List<String> listTokenUrls(int detailed);
     public native List<String> listTokenObjects(String url, int flags);
     private native byte[] signData(String privkey, int dig, byte data[]);
@@ -38,6 +51,7 @@ public class PKCS11 {
     public native byte[] generate(String url, int pk, int bits, String label, String id);
     public native void write(String url, String label, String id, byte data[], int flags);
     public native byte[] loadCertificate(String url);
+    public native void addProvider(String provider);
 
     public byte[] sign(PrivateKey privkey, byte data[]) {
         // check privkey instance of p11privkey

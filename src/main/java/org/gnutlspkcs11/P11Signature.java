@@ -55,12 +55,12 @@ public final class P11Signature extends SignatureSpi {
 
     @Override
     protected byte[] engineSign() throws SignatureException {
-        return new PKCS11().sign(privkey, data);
+        return PKCS11.getInstance().sign(privkey, data);
     }
 
     @Override
     protected boolean engineVerify(byte[] bytes) throws SignatureException {
-        return new PKCS11().verify(pubkey, data, bytes);
+        return PKCS11.getInstance().verify(pubkey, data, bytes);
     }
 
     @Override

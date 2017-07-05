@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     org_gnutlspkcs11_PKCS11
+ * Method:    pkcs11Init
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Init
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_gnutlspkcs11_PKCS11
  * Method:    listTokenUrls
  * Signature: (I)Ljava/util/List;
  */
@@ -77,6 +85,14 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_write
  * Signature: (Ljava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     org_gnutlspkcs11_PKCS11
+ * Method:    addProvider
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_addProvider
   (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus

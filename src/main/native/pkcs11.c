@@ -71,6 +71,16 @@ gnutlspkcs11_verify(const char *url, gnutls_datum_t *data, gnutls_datum_t *sig, 
   return ret;
 }
 
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Init
+(JNIEnv *env, jobject thisObj) {
+  int ret = gnutls_pkcs11_init(GNUTLS_PKCS11_FLAG_MANUAL, NULL);
+
+  if (ret < 0) {
+    /* exception */
+  }
+}
+
+
 JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenUrls
 (JNIEnv *env, jobject thisObj, jint jdetailed) {
   jclass list;
@@ -346,4 +356,51 @@ JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData__Ljava_lang_S
 JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData___3BI_3B_3B
 (JNIEnv *env, jobject thisObj, jbyteArray jpubkey, jint dig, jbyteArray jdata, jbyteArray jsignature) {
   return JNI_TRUE;
+}
+
+JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
+(JNIEnv *env, jobject thisObj, jstring jurl) {
+
+  const char *url = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): NULL;
+  int ret;
+  gnutls_x509_crt_t crt;
+  gnutls_datum_t data;
+
+  if ((ret = gnutls_x509_crt_init(&crt)) < 0) {
+    /* fprintf(stderr, "x509_crt_init: %s\n", gnutls_strerror(ret)); */
+    /* exit(1); */
+    /* exception */
+  }
+  printf("certificate : %s\n", url);
+  if ((ret = gnutls_x509_crt_import_url(crt, url, 0)) < 0) {
+    /* fprintf(stderr, "importing cert: %s\n", gnutls_strerror(ret)); */
+    /* exit(1); */
+    /* exception */
+  }
+
+  if ((ret = gnutls_x509_crt_export2(crt, GNUTLS_X509_FMT_DER, &data)) < 0) {
+    /* exception */
+  }
+
+  if (data.data != NULL) {
+    jbyteArray result = (*env)->NewByteArray(env, data.size);
+    (*env)->SetByteArrayRegion(env, result, 0, data.size, data.data);
+    printf("size: %d\n", data.size);
+    gnutls_free(data.data); // ????
+    return result;
+  }
+
+  return NULL;
+}
+
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_addProvider
+(JNIEnv *env, jobject thisObj, jstring jprovider) {
+  const char *provider = jprovider != NULL? (*env)->GetStringUTFChars(env, jprovider, 0): NULL;
+
+  int ret = gnutls_pkcs11_add_provider(provider, NULL);
+
+  if ( ret < 0 ) {
+    /* exception */
+  }
+
 }

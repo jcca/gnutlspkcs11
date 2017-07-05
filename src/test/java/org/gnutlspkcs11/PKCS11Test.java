@@ -37,7 +37,7 @@ class PKCS11Test {
     public static String PIN       = "pin-value=123456";
     public static String URL       = TOKEN + ";" + ID_OBJECT + ";" + PIN;
     static byte[] data      = "foobar".getBytes();
-    PKCS11 p11              = new PKCS11();
+    PKCS11 p11              = PKCS11.getInstance();
 
     @BeforeAll
     public static void before() {
