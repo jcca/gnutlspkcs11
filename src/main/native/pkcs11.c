@@ -371,7 +371,6 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
     /* exit(1); */
     /* exception */
   }
-  printf("certificate : %s\n", url);
   if ((ret = gnutls_x509_crt_import_url(crt, url, 0)) < 0) {
     /* fprintf(stderr, "importing cert: %s\n", gnutls_strerror(ret)); */
     /* exit(1); */
@@ -385,7 +384,6 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
   if (data.data != NULL) {
     jbyteArray result = (*env)->NewByteArray(env, data.size);
     (*env)->SetByteArrayRegion(env, result, 0, data.size, data.data);
-    printf("size: %d\n", data.size);
     gnutls_free(data.data); // ????
     return result;
   }
