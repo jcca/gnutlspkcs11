@@ -303,7 +303,13 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_signData
   gnutls_datum_t signature;
   gnutls_datum_t data;
   unsigned int flags = 0;
-  const char *url = (*env)->GetStringUTFChars(env, jurl, 0);
+  const char *url = jurl != NULL ?(*env)->GetStringUTFChars(env, jurl, 0) : "";
+
+  if (gnutls_url_is_supported(url) == 0) {
+    GnutlsPkcs11Exception(env, "Invalid PKCS #11 URL");
+    return NULL;
+  }
+
   /* Read data to sign */
   len = (*env)->GetArrayLength (env, jdata);
   unsigned char *buf = (unsigned char*)(*env)->GetByteArrayElements(env, jdata, 0);
@@ -361,7 +367,13 @@ JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData___3BI_3B_3B
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
 (JNIEnv *env, jobject thisObj, jstring jurl) {
 
-  const char *url = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): NULL;
+  const char *url = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): "";
+
+  if (gnutls_url_is_supported(url) == 0) {
+    GnutlsPkcs11Exception(env, "Invalid PKCS #11 URL");
+    return NULL;
+  }
+
   int ret;
   gnutls_x509_crt_t crt;
   gnutls_datum_t data;
