@@ -384,30 +384,32 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
   int ret;
   gnutls_x509_crt_t crt;
   gnutls_datum_t data;
+  jbyteArray result = NULL;
 
   if ((ret = gnutls_x509_crt_init(&crt)) < 0) {
-    /* fprintf(stderr, "x509_crt_init: %s\n", gnutls_strerror(ret)); */
-    /* exit(1); */
-    /* exception */
+    GnutlsPkcs11Exception(env, gnutls_strerror(ret));
+    return NULL;
   }
   if ((ret = gnutls_x509_crt_import_url(crt, url, 0)) < 0) {
-    /* fprintf(stderr, "importing cert: %s\n", gnutls_strerror(ret)); */
-    /* exit(1); */
-    /* exception */
+    GnutlsPkcs11Exception(env, gnutls_strerror(ret));
+    goto crt_end;
   }
 
   if ((ret = gnutls_x509_crt_export2(crt, GNUTLS_X509_FMT_DER, &data)) < 0) {
-    /* exception */
+    GnutlsPkcs11Exception(env, gnutls_strerror(ret));
+    goto crt_end;
   }
 
   if (data.data != NULL) {
-    jbyteArray result = (*env)->NewByteArray(env, data.size);
+    result = (*env)->NewByteArray(env, data.size);
     (*env)->SetByteArrayRegion(env, result, 0, data.size, data.data);
     gnutls_free(data.data); // ????
-    return result;
   }
 
-  return NULL;
+ crt_end:
+  gnutls_x509_crt_deinit(crt);
+
+  return result;
 }
 
 JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_addProvider
