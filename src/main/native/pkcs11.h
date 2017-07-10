@@ -82,10 +82,10 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_write
 /*
  * Class:     org_gnutlspkcs11_PKCS11
  * Method:    loadCertificate
- * Signature: (Ljava/lang/String;)[B
+ * Signature: (Ljava/lang/String;I)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject, jstring, jint);
 
 /*
  * Class:     org_gnutlspkcs11_PKCS11

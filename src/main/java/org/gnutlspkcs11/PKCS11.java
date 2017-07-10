@@ -50,7 +50,7 @@ public class PKCS11 {
     public native void delete(String url, int flags);
     public native byte[] generate(String url, int pk, int bits, String label, String id);
     public native void write(String url, String label, String id, byte data[], int flags);
-    public native byte[] loadCertificate(String url);
+    public native byte[] loadCertificate(String url, int format);
     public native void addProvider(String provider);
 
     public byte[] sign(PrivateKey privkey, byte data[]) {

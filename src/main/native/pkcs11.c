@@ -372,7 +372,7 @@ JNIEXPORT jboolean JNICALL Java_org_gnutlspkcs11_PKCS11_verifyData___3BI_3B_3B
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
-(JNIEnv *env, jobject thisObj, jstring jurl) {
+(JNIEnv *env, jobject thisObj, jstring jurl, jint fmt) {
 
   const char *url = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): "";
 
@@ -395,7 +395,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
     goto crt_end;
   }
 
-  if ((ret = gnutls_x509_crt_export2(crt, GNUTLS_X509_FMT_DER, &data)) < 0) {
+  if ((ret = gnutls_x509_crt_export2(crt, fmt, &data)) < 0) {
     GnutlsPkcs11Exception(env, gnutls_strerror(ret));
     goto crt_end;
   }

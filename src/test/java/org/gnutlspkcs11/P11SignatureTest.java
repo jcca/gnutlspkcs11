@@ -81,7 +81,7 @@ class P11SignatureTest {
     @Disabled("Run only if you have a real pkcs11 token.")
     @Test
     void signPDF() throws Exception {
-        InputStream certstream = new ByteArrayInputStream(p11.loadCertificate(URL));
+        InputStream certstream = new ByteArrayInputStream(p11.loadCertificate(URL, GNUTLS_X509_FMT.DER));
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         Certificate crt = cf.generateCertificate(certstream);
         Certificate[] chain = new Certificate[] {crt};
