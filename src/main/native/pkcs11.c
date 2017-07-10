@@ -144,8 +144,12 @@ JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenObjects
   list_add  = (*env)->GetMethodID(env, list, "add", "(Ljava/lang/Object;)Z");
   list_size = (*env)->GetMethodID (env, list, "size", "()I");
 
-  const char *curl;
-  curl = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): NULL;
+  const char *curl = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): "";
+
+  if (gnutls_url_is_supported(curl) == 0) {
+    GnutlsPkcs11Exception(env, "Invalid PKCS #11 URL");
+    return NULL;
+  }
 
   int ret, i;
   gnutls_pkcs11_obj_t *crt_list;
@@ -155,8 +159,7 @@ JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenObjects
   ret = gnutls_pkcs11_obj_list_import_url4(&crt_list, &crt_list_size,
                                            curl, flags);
   if (ret < 0){
-    fprintf(stderr, "error: %s\n", gnutls_strerror(ret));
-    /* new exception */
+    GnutlsPkcs11Exception(env, gnutls_strerror(ret));
     return NULL;
   }
 
@@ -180,11 +183,15 @@ JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenObjects
 JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_delete
 (JNIEnv *env, jobject thisObj, jstring jurl, jint flags) {
   int ret;
-  const char *url = NULL;
-  url = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): NULL;
+  const char *url = jurl != NULL? (*env)->GetStringUTFChars(env, jurl, 0): "";
+
+  if (gnutls_url_is_supported(url) == 0) {
+    GnutlsPkcs11Exception(env, "Invalid PKCS #11 URL");
+    return;
+  }
 
   if ((ret = gnutls_pkcs11_delete_url(url, flags)) < 0) {
-     // new exeption
+    GnutlsPkcs11Exception(env, gnutls_strerror(ret));
   }
 }
 
@@ -405,12 +412,11 @@ JNIEXPORT jbyteArray JNICALL Java_org_gnutlspkcs11_PKCS11_loadCertificate
 
 JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_addProvider
 (JNIEnv *env, jobject thisObj, jstring jprovider) {
-  const char *provider = jprovider != NULL? (*env)->GetStringUTFChars(env, jprovider, 0): NULL;
+  const char *provider = jprovider != NULL? (*env)->GetStringUTFChars(env, jprovider, 0): "";
 
   int ret = gnutls_pkcs11_add_provider(provider, NULL);
 
   if ( ret < 0 ) {
-    /* exception */
+    GnutlsPkcs11Exception(env, gnutls_strerror(ret));
   }
-
 }
