@@ -76,7 +76,7 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Init
   int ret = gnutls_pkcs11_init(GNUTLS_PKCS11_FLAG_MANUAL, NULL);
 
   if (ret < 0) {
-    /* exception */
+    GnutlsPkcs11Exception(env, gnutls_strerror(ret));
   }
 }
 
