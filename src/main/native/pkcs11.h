@@ -9,18 +9,18 @@ extern "C" {
 #endif
 /*
  * Class:     org_gnutlspkcs11_PKCS11
- * Method:    pkcs11Init
+ * Method:    init
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Init
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_init
   (JNIEnv *, jobject);
 
 /*
  * Class:     org_gnutlspkcs11_PKCS11
- * Method:    pkcs11Deinit
+ * Method:    deinit
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Deinit
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_deinit
   (JNIEnv *, jobject);
 
 /*

@@ -40,8 +40,8 @@ public class PKCS11 {
 
     private PKCS11() {}
 
-    public native void pkcs11Init();
-    public native void pkcs11Deinit();
+    public native void init();
+    public native void deinit();
     public native List<String> listTokenUrls(int detailed);
     public native List<String> listTokenObjects(String url, int flags);
     private native byte[] signData(String privkey, int dig, byte data[]);

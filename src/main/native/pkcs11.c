@@ -71,7 +71,7 @@ gnutlspkcs11_verify(const char *url, gnutls_datum_t *data, gnutls_datum_t *sig, 
   return ret;
 }
 
-JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Init
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_init
 (JNIEnv *env, jobject thisObj) {
   int ret = gnutls_pkcs11_init(GNUTLS_PKCS11_FLAG_MANUAL, NULL);
 
@@ -80,7 +80,7 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Init
   }
 }
 
-JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Deinit
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_deinit
 (JNIEnv *env, jobject thisObj) {
   gnutls_pkcs11_deinit();
 }
