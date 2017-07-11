@@ -16,6 +16,7 @@ public class Example {
         PKCS11 p11 = PKCS11.getInstance();
         String PIN = "<TOKEN PIN>";
         String PROVIDER = "/lib/opensc-pkcs11.so";
+        p11.pkcs11Init();
         p11.addProvider(PROVIDER);
 
 
@@ -26,6 +27,8 @@ public class Example {
                 System.out.println(pk);
             }
         }
+
+        p11.pkcs11Deinit();
     }
 }
 ```
