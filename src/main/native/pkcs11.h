@@ -17,6 +17,14 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Init
 
 /*
  * Class:     org_gnutlspkcs11_PKCS11
+ * Method:    pkcs11Deinit
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Deinit
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_gnutlspkcs11_PKCS11
  * Method:    listTokenUrls
  * Signature: (I)Ljava/util/List;
  */

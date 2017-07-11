@@ -80,6 +80,10 @@ JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Init
   }
 }
 
+JNIEXPORT void JNICALL Java_org_gnutlspkcs11_PKCS11_pkcs11Deinit
+(JNIEnv *env, jobject thisObj) {
+  gnutls_pkcs11_deinit();
+}
 
 JNIEXPORT jobject JNICALL Java_org_gnutlspkcs11_PKCS11_listTokenUrls
 (JNIEnv *env, jobject thisObj, jint jdetailed) {
